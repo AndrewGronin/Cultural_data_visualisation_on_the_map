@@ -30,6 +30,6 @@
             </FlyoutBase.AttachedFlyout>
             <ListBox Height="100" Width="100"/>
         </ListBox>
-        <AutoSuggestBox HorizontalAlignment="Left" Margin="10,75,0,0" Width="404"/>
+        <AutoSuggestBox x:Name="suggestBox" HorizontalAlignment="Left" Margin="10,75,0,0" Width="404" PlaceholderText="Кого ищем?" QueryIcon="Find" TextChanged="suggestBox_TextChanged" SuggestionChosen="suggestBox_SuggestionChosen" QuerySubmitted="suggestBox_QuerySubmitted"/>
     </Grid>
 </Page>

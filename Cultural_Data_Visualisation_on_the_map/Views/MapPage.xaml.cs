@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -35,6 +37,8 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
         private double _zoomLevel;
 
+        ObservableCollection<string> list_of_persons;
+
         public double ZoomLevel
         {
             get { return _zoomLevel; }
@@ -58,13 +62,13 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             InitializeComponent();
 
 
-            List<string> list = new List<string>();
+            list_of_persons = new ObservableCollection<string>();
 
             for (int i = 0; i < 30; i++)
-                list.Add (i.ToString());
+                list_of_persons.Add (i.ToString());
             //Persons_List.Items.Add(i.ToString());//добавляю для теста
 
-            Persons_List.ItemsSource = list;
+            Persons_List.ItemsSource = list_of_persons;
             
         }
 
@@ -172,6 +176,48 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
         private void Persons_List_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void suggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.CheckCurrent())
+            {
+                var term = suggestBox.Text.ToLower();
+                var results = list_of_persons.Where(i => i.ToLower().Contains(term)).ToList();
+                suggestBox.ItemsSource = results;
+            }
+        }
+
+        private void suggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            //textBlock1.Text = args.SelectedItem as string;
+
+            BasicGeoposition Position = new BasicGeoposition()
+            {
+                Latitude = 59.945225,
+                Longitude = 30.3417
+            };
+
+            Geopoint A = new Geopoint(Position);
+            AddMapIcon(A, args.SelectedItem as string);
+        }
+
+        private void suggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            /*var term = args.QueryText.ToLower();
+            var results = phones.Where(i => i.ToLower().Contains(term)).ToList();
+            suggestBox.ItemsSource = results;
+            suggestBox.IsSuggestionListOpen = true;*/
+
+
+            BasicGeoposition Position = new BasicGeoposition()
+            {
+                Latitude = 59.945225,
+                Longitude = 30.3417
+            };
+
+            Geopoint A = new Geopoint(Position);
+            AddMapIcon(A, args.QueryText as string);
         }
     }
 }

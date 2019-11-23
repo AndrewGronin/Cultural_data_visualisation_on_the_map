@@ -173,10 +173,7 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             
         }
 
-        private void Persons_List_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
-        {
-            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
-        }
+       
 
         private void suggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -218,6 +215,21 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
             Geopoint A = new Geopoint(Position);
             AddMapIcon(A, args.QueryText as string);
+        }
+
+        private void Name_textBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+           Name_textBox.Text =  Persons_List.SelectedItem.ToString();
+        }
+
+        private void Description_textBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            Description_textBox.Text = Persons_List.SelectedItem.ToString();
+        }
+
+        private void Persons_List_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
     }
 }

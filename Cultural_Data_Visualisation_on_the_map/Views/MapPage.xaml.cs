@@ -215,6 +215,7 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
             Geopoint A = new Geopoint(Position);
             AddMapIcon(A, args.QueryText as string);
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
         private void Name_textBlock_Loaded(object sender, RoutedEventArgs e)
@@ -230,6 +231,36 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
         private void Persons_List_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void suggestBox_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void Name_textBox2_Loaded(object sender, RoutedEventArgs e)
+        {
+            Name_textBox2.Text = suggestBox.Text;
+        }
+
+        private void Description_textBox2_Loaded(object sender, RoutedEventArgs e)
+        {
+            Description_textBox2.Text = suggestBox.Text;
+        }
+
+        private void Dates_textBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            Dates_textBox.Text = Persons_List.SelectedItem.ToString();
+        }
+
+        private void Dates_textBox2_Loaded(object sender, RoutedEventArgs e)
+        {
+            Dates_textBox2.Text = suggestBox.Text;
+        }
+
+        private void Clear_button_Click(object sender, RoutedEventArgs e)
+        {
+            mapControl.MapElements.Clear();
         }
     }
 }

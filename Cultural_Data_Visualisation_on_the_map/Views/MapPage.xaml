@@ -19,23 +19,43 @@
             <FlyoutBase.AttachedFlyout>
                 <Flyout x:Name="Person_info">
                     <Grid>
-                        
-                
-                            <StackPanel>
-                                <TextBox x:Name="Name_textBox" Loaded="Name_textBlock_Loaded" />
-                                <TextBox x:Name="Description_textBox" Text="орлр" Loaded="Description_textBlock_Loaded"  />
-                            </StackPanel>
-                        
-                        
+
+
+                        <StackPanel>
+                            <TextBox x:Name="Name_textBox" Loaded="Name_textBlock_Loaded" IsReadOnly="True" />
+                            <TextBox x:Name="Dates_textBox"  IsReadOnly="True" Loaded="Dates_textBox_Loaded" />
+                            <TextBox x:Name="Description_textBox" Loaded="Description_textBlock_Loaded" IsReadOnly="True"  />
+                        </StackPanel>
+
+
 
                     </Grid>
-                  
-                    
+
+
 
                 </Flyout>
             </FlyoutBase.AttachedFlyout>
             <ListBox Height="100" Width="100"/>
         </ListBox>
-        <AutoSuggestBox x:Name="suggestBox" HorizontalAlignment="Left" Margin="10,75,0,0" Width="404" PlaceholderText="Кого ищем?" QueryIcon="Find" TextChanged="suggestBox_TextChanged" SuggestionChosen="suggestBox_SuggestionChosen" QuerySubmitted="suggestBox_QuerySubmitted"/>
+        <AutoSuggestBox x:Name="suggestBox" HorizontalAlignment="Left" Margin="10,55,0,0" Width="404" PlaceholderText="Кого ищем?" QueryIcon="Find" TextChanged="suggestBox_TextChanged" SuggestionChosen="suggestBox_SuggestionChosen" QuerySubmitted="suggestBox_QuerySubmitted" RightTapped="suggestBox_RightTapped">
+            <FlyoutBase.AttachedFlyout>
+                <Flyout>
+                    <Grid>
+
+
+                        <StackPanel>
+                            <TextBox x:Name="Name_textBox2" Loaded="Name_textBox2_Loaded" IsReadOnly="True"/>
+                            <TextBox x:Name="Dates_textBox2"  IsReadOnly="True" Loaded="Dates_textBox2_Loaded" />
+                            <TextBox x:Name="Description_textBox2" Text="орлр" Loaded="Description_textBox2_Loaded" IsReadOnly="True"/>
+
+                        </StackPanel>
+
+
+
+                    </Grid>
+                </Flyout>
+            </FlyoutBase.AttachedFlyout>
+        </AutoSuggestBox>
+        <Button x:Name="Clear_button" Content="Отчистить карту" Margin="10,93,0,0" VerticalAlignment="Top" Width="151" Click="Clear_button_Click"/>
     </Grid>
 </Page>

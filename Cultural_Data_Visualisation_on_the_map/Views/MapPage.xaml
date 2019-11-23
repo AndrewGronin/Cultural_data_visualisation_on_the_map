@@ -15,8 +15,21 @@
             x:Name="mapControl"
             ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}"
             Center="{x:Bind Center, Mode=OneWay}" Margin="419,0,1,0" />
-        <ListBox x:Name="Persons_List" Margin="0,0,1086,0" SelectionChanged="ListBox_SelectionChanged">
+        <ListBox x:Name="Persons_List" Margin="0,160,1119,0" SelectionChanged="ListBox_SelectionChanged" RightTapped="Persons_List_RightTapped">
+            <FlyoutBase.AttachedFlyout>
+                <Flyout x:Name="Person_info">
+                    <Grid>
+                        <TextBlock x:Name="Name_textBlock" Text="xxxx" />
+                        <TextBlock x:Name="Description_textBlock" Text="орлр"  />
+
+                    </Grid>
+                  
+                    
+
+                </Flyout>
+            </FlyoutBase.AttachedFlyout>
             <ListBox Height="100" Width="100"/>
         </ListBox>
+        <AutoSuggestBox HorizontalAlignment="Left" Margin="10,75,0,0" Width="404"/>
     </Grid>
 </Page>

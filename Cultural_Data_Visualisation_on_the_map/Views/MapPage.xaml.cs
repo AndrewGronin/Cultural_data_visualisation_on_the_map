@@ -10,8 +10,10 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Services.Maps;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cultural_Data_Visualisation_on_the_map.Views
@@ -53,8 +55,10 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             Center = new Geopoint(_defaultPosition);
             ZoomLevel = DefaultZoomLevel;
             InitializeComponent();
-            Persons_List.Items.Add("AAAAAAAA");//добавляю для теста
-            Persons_List.Items.Add("ИИИИИИИИ");
+
+            for(int i = 0; i<30;i++)
+            Persons_List.Items.Add(i.ToString());//добавляю для теста
+            
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -153,9 +157,14 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             };
 
             Geopoint A = new Geopoint(Position);
-            AddMapIcon(A, "SMERTb");
+            AddMapIcon(A, Persons_List.SelectedItem.ToString());
                 
             
+        }
+
+        private void Persons_List_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
     }
 }

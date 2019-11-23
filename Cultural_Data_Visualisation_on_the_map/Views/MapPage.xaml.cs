@@ -53,6 +53,8 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             Center = new Geopoint(_defaultPosition);
             ZoomLevel = DefaultZoomLevel;
             InitializeComponent();
+            Persons_List.Items.Add("AAAAAAAA");//добавляю для теста
+            Persons_List.Items.Add("ИИИИИИИИ");
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -91,8 +93,9 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             if (mapControl != null)
             {
                 // TODO WTS: Set your map service token. If you don't have one, request from https://www.bingmapsportal.com/
-                // mapControl.MapServiceToken = string.Empty;
-                AddMapIcon(Center, "Map_YourLocation".GetLocalized());
+                //MapService.ServiceToken = "3ZD2VwJ9BPgSIZp42L4D~OXXDDKVQk9WYpGS42iLobg~AgoKqlQffKZXFrAED3UJc0sncgcqrtiUBXHHYIU9E6dtovz-Hpyl4Bfff5WyiaSi";
+
+                //AddMapIcon(Center, "Map_YourLocation".GetLocalized());
             }
         }
 
@@ -140,5 +143,19 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
         }
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BasicGeoposition Position = new BasicGeoposition()
+            {
+                Latitude = 59.945225,
+                Longitude = 30.3417
+            };
+
+            Geopoint A = new Geopoint(Position);
+            AddMapIcon(A, "SMERTb");
+                
+            
+        }
     }
 }

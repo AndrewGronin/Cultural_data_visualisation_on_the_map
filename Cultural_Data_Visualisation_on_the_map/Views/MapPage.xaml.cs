@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -56,8 +57,14 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             ZoomLevel = DefaultZoomLevel;
             InitializeComponent();
 
-            for(int i = 0; i<30;i++)
-            Persons_List.Items.Add(i.ToString());//добавляю для теста
+
+            List<string> list = new List<string>();
+
+            for (int i = 0; i < 30; i++)
+                list.Add (i.ToString());
+            //Persons_List.Items.Add(i.ToString());//добавляю для теста
+
+            Persons_List.ItemsSource = list;
             
         }
 

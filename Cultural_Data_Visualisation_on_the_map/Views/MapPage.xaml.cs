@@ -18,6 +18,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
+using QuickType;
+using System.IO;
 
 namespace Cultural_Data_Visualisation_on_the_map.Views
 {
@@ -37,7 +39,10 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
         private double _zoomLevel;
 
-        ObservableCollection<string> list_of_persons;
+        Welcome welcome;
+
+        //ObservableCollection<string> list_of_persons;
+        
 
         public double ZoomLevel
         {
@@ -53,23 +58,49 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             set { Set(ref _center, value); }
         }
 
+        PersonElement[] list_of_persons;
+        IOrderedEnumerable<PersonElement> list_of_persons_sorted;
+        Dictionary<string, Relation[]> coordinates;
+
         public MapPage()
         {
+            Load_from_JSON();
+            list_of_persons = welcome.Data.Persons;
+
+            coordinates = new Dictionary<string, Relation[]>();
+
+            foreach (PersonElement i in list_of_persons) {
+                if (i.LastName.Ru != null)
+                {
+                    coordinates[i.LastName.Ru] = i.Relations;
+                }
+            }
+
+
+
+
+
+
             MapService.ServiceToken = "3ZD2VwJ9BPgSIZp42L4D~OXXDDKVQk9WYpGS42iLobg~AgoKqlQffKZXFrAED3UJc0sncgcqrtiUBXHHYIU9E6dtovz-Hpyl4Bfff5WyiaSi";
             _locationService = new LocationService();
             Center = new Geopoint(_defaultPosition);
             ZoomLevel = DefaultZoomLevel;
             InitializeComponent();
 
-
-            list_of_persons = new ObservableCollection<string>();
-
-            for (int i = 0; i < 30; i++)
-                list_of_persons.Add (i.ToString());
-            //Persons_List.Items.Add(i.ToString());//добавляю для теста
-
+            /*list_of_persons_sorted = from u in list_of_persons
+                                     orderby u.LastName.Ru
+                                     select u;*/
             Persons_List.ItemsSource = list_of_persons;
-            
+
+            Persons_List.DisplayMemberPath = "LastName.Ru";
+            Persons_List.SelectedValuePath = "LastName.Ru";
+
+
+            //list_of_persons = new ObservableCollection<string>();
+
+
+
+
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -161,14 +192,40 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            BasicGeoposition Position = new BasicGeoposition()
-            {
-                Latitude = 59.945225,
-                Longitude = 30.3417
-            };
+            /*List<List<double>> coords = new List<List<double>>();
+            foreach (var i in Persons_List.SelectedItem.Relations) {
+                coords[0] = i.Location.CoordinateX;
+                coords[1] = i.Location.CoordinateX;
+            }*/
+            
+            
 
-            Geopoint A = new Geopoint(Position);
-            AddMapIcon(A, Persons_List.SelectedItem.ToString());
+            
+            //PersonElement c = Persons_List.SelectedItem;
+            if (Persons_List.SelectedValue != null)
+            {
+                string name = Persons_List.SelectedValue.ToString();
+                foreach (Relation i in coordinates[name]) {
+                   // if(i == null)
+                    BasicGeoposition Position = new BasicGeoposition()
+                    {
+                        Latitude = i.Location.CoordinateX.Value,
+                        Longitude = i.Location.CoordinateY.Value
+                    };
+                    Geopoint A = new Geopoint(Position);
+                    if(i.Quote.Ru != null)
+                    AddMapIcon(A, i.Quote.Ru.ToString());
+                    else
+                        AddMapIcon(A, "Описание отсутствует");
+
+                }
+
+
+
+
+
+                
+            }
                 
             
         }
@@ -180,23 +237,39 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
             if (args.CheckCurrent())
             {
                 var term = suggestBox.Text.ToLower();
-                var results = list_of_persons.Where(i => i.ToLower().Contains(term)).ToList();
+                
+                var results = list_of_persons.Where(i => i.LastName.Ru != null &&
+                                                i.LastName.Ru.ToLower().Contains(term)).ToList();
                 suggestBox.ItemsSource = results;
+                suggestBox.DisplayMemberPath = "LastName.Ru";
             }
         }
 
         private void suggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            //textBlock1.Text = args.SelectedItem as string;
-
-            BasicGeoposition Position = new BasicGeoposition()
+            if (Persons_List.SelectedValue != null)
             {
-                Latitude = 59.945225,
-                Longitude = 30.3417
-            };
+                suggestBox.DisplayMemberPath = "LastName.Ru";
+                suggestBox.TextMemberPath = "LastName.Ru";
+                suggestBox.Text = args.SelectedItem  .ToString();
+                string name = suggestBox.Text;
+                foreach (Relation i in coordinates[name])
+                {
+                    // if(i == null)
+                    BasicGeoposition Position = new BasicGeoposition()
+                    {
+                        Latitude = i.Location.CoordinateX.Value,
+                        Longitude = i.Location.CoordinateY.Value
+                    };
+                    Geopoint A = new Geopoint(Position);
+                    if (i.Quote.Ru != null)
+                        AddMapIcon(A, i.Quote.Ru.ToString());
+                    else
+                        AddMapIcon(A, "Описание отсутствует");
 
-            Geopoint A = new Geopoint(Position);
-            AddMapIcon(A, args.SelectedItem as string);
+                }
+            }
+           // AddMapIcon(A, args.SelectedItem as string);
         }
 
         private void suggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -220,12 +293,12 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
         private void Name_textBlock_Loaded(object sender, RoutedEventArgs e)
         {
-           Name_textBox.Text =  Persons_List.SelectedItem.ToString();
+           Name_textBox.Text =  Persons_List.SelectedValue.ToString();
         }
 
         private void Description_textBlock_Loaded(object sender, RoutedEventArgs e)
         {
-            Description_textBox.Text = Persons_List.SelectedItem.ToString();
+            Description_textBox.Text = Persons_List.SelectedValue.ToString();
         }
 
         private void Persons_List_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
@@ -250,7 +323,7 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
 
         private void Dates_textBox_Loaded(object sender, RoutedEventArgs e)
         {
-            Dates_textBox.Text = Persons_List.SelectedItem.ToString();
+            Dates_textBox.Text = Persons_List.SelectedValue.ToString();
         }
 
         private void Dates_textBox2_Loaded(object sender, RoutedEventArgs e)
@@ -261,6 +334,14 @@ namespace Cultural_Data_Visualisation_on_the_map.Views
         private void Clear_button_Click(object sender, RoutedEventArgs e)
         {
             mapControl.MapElements.Clear();
+        }
+
+
+        private void Load_from_JSON()
+        {
+            string jsonString = File.ReadAllText("zhepa.json");
+            welcome = Welcome.FromJson(jsonString);
+            //Console.WriteLine(welcome.Data.Persons[0].FirstName.Ru);
         }
     }
 }
